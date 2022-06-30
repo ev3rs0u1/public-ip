@@ -1,9 +1,12 @@
 use std::net::{IpAddr, Ipv4Addr};
 use trust_dns_resolver::Resolver;
-use trust_dns_resolver::error::ResolveResult;
-use trust_dns_resolver::{config::*, lookup::TxtLookup};
+use trust_dns_resolver::config::*;
 
 fn main() {
+    println!("{}", get_public_ip())
+}
+
+fn get_public_ip() -> String {
     let query = "o-o.myaddr.l.google.com.";
     let config = ResolverConfig::from_parts(
         None,
@@ -14,21 +17,13 @@ fn main() {
                 IpAddr::V4(Ipv4Addr::new(216, 239, 34, 10)),
             ],
             53,
-            false),
+            false,
+        ),
     );
 
     let resolver = Resolver::new(config, ResolverOpts::default()).unwrap();
-    let response = resolver.txt_lookup(query);
-    display_txt(&response);
-}
-
-fn display_txt(response: &ResolveResult<TxtLookup>) {
-    match response {
-        Err(_) => println!("No Records."),
-        Ok(resp) => {
-            for record in resp.iter() {
-                println!("{}", record.to_string());
-            }
-        }
+    match resolver.txt_lookup(query) {
+        Err(_) => String::from("0.0.0.0"),
+        Ok(response) => response.iter().next().unwrap().to_string()
     }
 }

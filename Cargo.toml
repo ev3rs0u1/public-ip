@@ -7,11 +7,7 @@ edition = "2021"
 trust-dns-resolver = "0.21.1"
 
 [profile.release]
-strip = true
-opt-level = "z"
-# 开启 LTO（链接时优化）。可以消除大量冗余代码，减小二进制体积，代价是更长的链接时间
 lto = true
-# 调整并行代码生成单元数量。默认会启用 16 个并行代码生成单元，对编译速度有提升，但是会妨碍某些优化的进行
-codegen-units = 1
-# Panic 时立刻终止。禁用生成栈回溯，注意：此选项会对程序的行为产生影响
+strip = true
+opt-level = 'z'
 panic = 'abort'
